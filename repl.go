@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func startREPL() {
+func startREPL(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -18,7 +18,7 @@ func startREPL() {
 			text = scanner.Text()
 		} else {
 			if scanner.Err() != nil {
-				fmt.Printf("Could not capture input. Got error: %v\n", scanner.Err())
+				fmt.Println(scanner.Err())
 			} else {
 				fmt.Println("Close the Pokedex due to reading EOF")
 			}
@@ -36,9 +36,9 @@ func startREPL() {
 			continue
 		}
 
-		err := command.callback()
+		err := command.callback(cfg)
 		if err != nil {
-			fmt.Printf("Callback of command did not succeed: %v\n", err)
+			fmt.Println(err)
 			continue
 		}
 	}
