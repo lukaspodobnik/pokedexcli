@@ -22,20 +22,25 @@ func (c *Client) GetLocations(nextURL *string) (RespLocationArea, error) {
 		url = *nextURL
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return RespLocationArea{}, err
-	}
+	data, hit := c.cache.Get(url)
+	if !hit {
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return RespLocationArea{}, err
+		}
 
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return RespLocationArea{}, err
-	}
-	defer resp.Body.Close()
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			return RespLocationArea{}, err
+		}
+		defer resp.Body.Close()
 
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return RespLocationArea{}, err
+		data, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return RespLocationArea{}, err
+		}
+
+		c.cache.Add(url, data)
 	}
 
 	locationArea := RespLocationArea{}
