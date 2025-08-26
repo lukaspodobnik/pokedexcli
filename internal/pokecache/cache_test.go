@@ -2,6 +2,7 @@ package pokecache
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 )
@@ -57,5 +58,54 @@ func TestReapLoop(t *testing.T) {
 	if ok {
 		t.Errorf("expected to not find key")
 		return
+	}
+}
+
+func TestConcurrentAddGet(t *testing.T) {
+	const interval = 5 * time.Second
+	cache := NewCache(interval)
+	var wg sync.WaitGroup
+	numOperations := 1000
+
+	// Test concurrent Adds
+	for i := 0; i < numOperations; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			key := fmt.Sprintf("key%d", i)
+			val := []byte(fmt.Sprintf("value%d", i))
+			cache.Add(key, val)
+		}(i)
+	}
+	wg.Wait()
+
+	// Test concurrent Gets
+	for i := 0; i < numOperations; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			key := fmt.Sprintf("key%d", i)
+			val, ok := cache.Get(key)
+			if !ok {
+				t.Errorf("expected to find key %s", key)
+				return
+			}
+			expectedVal := []byte(fmt.Sprintf("value%d", i))
+			if string(val) != string(expectedVal) {
+				t.Errorf("expected value %s, got %s for key %s", expectedVal, val, key)
+			}
+		}(i)
+	}
+	wg.Wait()
+}
+
+func TestGetNonExistentKey(t *testing.T) {
+	const interval = 5 * time.Second
+	cache := NewCache(interval)
+
+	// Try to get a key that hasn't been added
+	_, ok := cache.Get("non_existent_key")
+	if ok {
+		t.Errorf("expected to not find non-existent key")
 	}
 }
