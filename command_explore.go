@@ -7,7 +7,7 @@ import (
 
 func exploreCallback(cfg *config, input ...string) error {
 	if len(input) != 1 {
-		return errors.New("for explore exactly one argument must be provided: <location-area>")
+		return errors.New("for explore exactly one argument must be provided: <location-area-name or id>")
 	}
 
 	encounters, err := cfg.pokeapiClient.GetPokemonEncounters(input[0])
@@ -17,8 +17,9 @@ func exploreCallback(cfg *config, input ...string) error {
 
 	fmt.Println()
 	fmt.Printf("Exploring %s...\n", input[0])
+	fmt.Println("Found Pokemon:")
 	for _, encounter := range encounters.PokemonEncounters {
-		fmt.Println(encounter.Pokemon.Name)
+		fmt.Printf(" - %s\n", encounter.Pokemon.Name)
 	}
 	fmt.Println()
 

@@ -1,29 +1,38 @@
 package pokeapi
 
-import (
-	"encoding/json"
-)
+import "encoding/json"
 
-type RespPokemonEncounters struct {
-	PokemonEncounters []struct {
-		Pokemon struct {
+type Pokemon struct {
+	Name           string `json:"name"`
+	BaseExperience int    `json:"base_experience"`
+	Height         int    `json:"height"`
+	Weight         int    `json:"weight"`
+	Stats          []struct {
+		Stat struct {
 			Name string `json:"name"`
-		} `json:"pokemon"`
-	} `json:"pokemon_encounters"`
+		} `json:"stat"`
+		Base int `json:""`
+	} `json:"stats"`
+	Types []struct {
+		Slot int `json:"slot"`
+		Type struct {
+			Name string `json:"name"`
+		} `json:"type"`
+	} `json:"types"`
 }
 
-func (c *Client) GetPokemonEncounters(locationArea string) (RespPokemonEncounters, error) {
-	url := baseURL + "/location-area/" + locationArea
+func (c *Client) GetPokemon(name string) (Pokemon, error) {
+	url := baseURL + "/pokemon/" + name
 
 	data, err := c.doCachedGetRequest(url)
 	if err != nil {
-		return RespPokemonEncounters{}, err
+		return Pokemon{}, err
 	}
 
-	encounters := RespPokemonEncounters{}
-	if err := json.Unmarshal(data, &encounters); err != nil {
-		return RespPokemonEncounters{}, err
+	pokemon := Pokemon{}
+	if err := json.Unmarshal(data, &pokemon); err != nil {
+		return Pokemon{}, err
 	}
 
-	return encounters, nil
+	return pokemon, nil
 }
