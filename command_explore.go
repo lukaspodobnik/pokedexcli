@@ -7,7 +7,7 @@ import (
 
 func exploreCallback(cfg *config, input ...string) error {
 	if len(input) != 1 {
-		return errors.New("for explore exactly one argument must be provided: <location-area-name or id>")
+		return errors.New("for explore exactly one argument must be provided: <location-area>")
 	}
 
 	encounters, err := cfg.pokeapiClient.GetPokemonEncounters(input[0])

@@ -8,7 +8,7 @@ import (
 
 func catchCallback(cfg *config, input ...string) error {
 	if len(input) != 1 {
-		return errors.New("for explore exactly one argument must be provided: <location-area-name or id>")
+		return errors.New("for catch exactly one argument must be provided: <pokemon>")
 	}
 
 	pokemon, err := cfg.pokeapiClient.GetPokemon(input[0])

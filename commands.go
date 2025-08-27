@@ -35,13 +35,19 @@ func init() {
 
 	commands["explore"] = cliCommand{
 		name:        "explore",
-		description: "Displays all Pokemon located at <location-area-name or id>",
+		description: "Displays all Pokemon located at <location-area>",
 		callback:    exploreCallback,
 	}
 
 	commands["catch"] = cliCommand{
 		name:        "catch",
-		description: "Try to catch the specified Pokemon: <Pokemon-name>",
+		description: "Try to catch the specified <pokemon>",
 		callback:    catchCallback,
+	}
+
+	commands["inspect"] = cliCommand{
+		name:        "inspect",
+		description: "Display information about a caught <pokemon>",
+		callback:    inspectCallback,
 	}
 }
