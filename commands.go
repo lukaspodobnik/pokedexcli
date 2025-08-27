@@ -50,4 +50,10 @@ func init() {
 		description: "Display information about a caught <pokemon>",
 		callback:    inspectCallback,
 	}
+
+	commands["pokedex"] = cliCommand{
+		name:        "pokedex",
+		description: "Display all caught pokemon",
+		callback:    pokedexCallback,
+	}
 }
